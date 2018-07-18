@@ -24,8 +24,8 @@ def trainClassification(model,train_loader, test_loader, lr=0.01, epochs=10, mom
             epoch_acc = 0
             samples = 0
             for i, batch in enumerate(loaders[mode]):
-                x=Variable(batch["image"], requires_grad=(mode=='train'))
-                y=Variable(batch["label"])
+                x=Variable(batch["image"], requires_grad=(mode=='train'), volatile=True)
+                y=Variable(batch["label"],)
                 if torch.cuda.is_available(): 
                     x, y = x.cuda(), y.cuda()
                 output = model(x)

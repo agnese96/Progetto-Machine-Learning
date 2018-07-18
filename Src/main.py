@@ -4,6 +4,7 @@ import os
 path = os.getcwd()
 
 #%% serve per jupyter
+import os
 os.chdir('./Src')
 path='..'
 
@@ -25,8 +26,8 @@ datasetTrain = ImageDataset(path+'/Dataset/images', path+'/Dataset/training_list
 datasetValidation = ImageDataset(path+'/Dataset/images', path+'/Dataset/validation_list.csv', transform=transform)
 
 #%% definiamo i data loaders
-imageLoaderTrain = DataLoader(datasetTrain, batch_size=256, num_workers=0, shuffle=True)
-imageLoaderValidation = DataLoader(datasetValidation, batch_size=256, num_workers=2)
+imageLoaderTrain = DataLoader(datasetTrain, batch_size=10, num_workers=0, shuffle=True)
+imageLoaderValidation = DataLoader(datasetValidation, batch_size=10, num_workers=2)
 
 #%%
 import torchvision.models as models
@@ -50,6 +51,8 @@ model.fc = nn.Sequential(*fcMod)
 #%% 
 model.fc
 
+#%%
+torch.cuda.empty_cache()
 #%%
 from trainFunction import trainClassification
 modelTrained, classificationLogs = trainClassification(model, imageLoaderTrain, imageLoaderValidation)
