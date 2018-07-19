@@ -32,15 +32,14 @@ imageLoaderValidation = DataLoader(datasetValidation, batch_size=5, num_workers=
 
 #%%
 import torchvision.models as models
-AlexNet = models.alexnet(pretrained=True)
-#%%
-
-#print(AlexNet) #visualizza modello 
+ResNet = models.resnet18(pretrained=True)
 
 #%%
+print(ResNet) #visualizza modello 
 
+#%%
 from copy import deepcopy
-model = deepcopy(AlexNet) #copia modello 
+model = deepcopy(ResNet) #copia modello 
 
 #%%
 """ from torch import nn
@@ -49,16 +48,16 @@ classifierMod.append(nn.ReLU(inplace=True))
 classifierMod.append(nn.Linear(100,100))
 classifierMod.append(nn.ReLU(inplace=True))
 classifierMod.append(nn.Linear(1000, 16)) """
-from torch import nn
-classifierMod = list(model.classifier)
+"""from torch import nn
+classifierMod = list(model.fc)
 classifierMod.pop()
-classifierMod.append(nn.Linear(4096,16))
+classifierMod.append(nn.Linear(4096,16))"""
 
 #%%
-model.classifier = nn.Sequential(*classifierMod)
+""""model.fc = nn.Sequential(*classifierMod)
 
 #%%
-model.classifier
+model.fc"""
 
 #%%
 torch.cuda.empty_cache()
