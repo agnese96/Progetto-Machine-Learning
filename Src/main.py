@@ -5,9 +5,9 @@ path = os.getcwd()
 path
 
 #%% serve per jupyter
-#import os
-#os.chdir('./Src')
-#path='..'
+import os
+os.chdir('./Src')
+path='..'
 
 #%% main imports
 import torch
@@ -27,16 +27,18 @@ datasetTrain = ImageDataset(path+'/Dataset/images', path+'/Dataset/training_list
 datasetValidation = ImageDataset(path+'/Dataset/images', path+'/Dataset/validation_list.csv', transform=transform)
 
 #%% definiamo i data loaders
-imageLoaderTrain = DataLoader(datasetTrain, batch_size=10, num_workers=0, shuffle=True)
-imageLoaderValidation = DataLoader(datasetValidation, batch_size=10, num_workers=2)
+imageLoaderTrain = DataLoader(datasetTrain, batch_size=5, num_workers=0, shuffle=True)
+imageLoaderValidation = DataLoader(datasetValidation, batch_size=5, num_workers=0)
 
 #%%
 import torchvision.models as models
 AlexNet = models.alexnet(pretrained=True)
 #%%
-print(AlexNet) #visualizza modello 
+
+#print(AlexNet) #visualizza modello 
 
 #%%
+
 from copy import deepcopy
 model = deepcopy(AlexNet) #copia modello 
 
@@ -51,15 +53,18 @@ from torch import nn
 classifierMod = list(model.classifier)
 classifierMod.pop()
 classifierMod.append(nn.Linear(4096,16))
+
 #%%
 model.classifier = nn.Sequential(*classifierMod)
+
 #%%
 model.classifier
 
 #%%
 torch.cuda.empty_cache()
+
 #%%
 from trainFunction import trainClassification
 modelTrained, classificationLogs = trainClassification(model, imageLoaderTrain, imageLoaderValidation)
 
-print(modelTrained.shape)
+print(classificationLogs)

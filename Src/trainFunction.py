@@ -6,9 +6,9 @@ from torch.optim import SGD
 from torch.autograd import Variable
 from torch.utils.data import DataLoader 
 #%%
-def trainClassification(model,train_loader, test_loader, lr=0.01, epochs=10, momentum=0.9, weight_decay = 0.000001):
+def trainClassification(model,train_loader, test_loader, lr=0.01, epochs=3, momentum=0.9):
     criterion = nn.CrossEntropyLoss()
-    optimizer = SGD(model.parameters(),lr, momentum=momentum, weight_decay=weight_decay)
+    optimizer = SGD(model.parameters(),lr, momentum=momentum)
     loaders = {'train':train_loader, 'validation':test_loader} 
     losses = {'train':[], 'validation':[]}
     accuracies = {'train':[], 'validation':[]}
@@ -35,16 +35,17 @@ def trainClassification(model,train_loader, test_loader, lr=0.01, epochs=10, mom
                     optimizer.step()
                     optimizer.zero_grad()
                 acc = accuracy_score(y.data,output.max(1)[1].data)
-                epoch_loss+=l.data[0]*x.shape[0]
+                #print(l.item(),x.shape[0])
+                epoch_loss+=l.item()*x.shape[0]
                 epoch_acc+=acc*x.shape[0]
                 samples+=x.shape[0]      
-            print("\r[%s] Epoch %d/%d. Iteration %d/%d. Loss: %0.2f. Accuracy: %0.2f\t\t\t\t\t" % \
-            (mode, e+1, epochs, i, len(loaders[mode]), epoch_loss/samples, epoch_acc/samples),)
-    epoch_loss/=samples
-    epoch_acc/=samples
-    losses[mode].append(epoch_loss)
-    accuracies[mode].append(epoch_acc)
-    print ("\r[%s] Epoch %d/%d. Iteration %d/%d. Loss: %0.2f. Accuracy: %0.2f\t\t\t\t\t" % \
-    (mode, e+1, epochs, i, len(loaders[mode]), epoch_loss, epoch_acc),)
+            """ print("\r[%s] Epoch %d/%d. Iteration %d/%d. Loss: %0.2f. Accuracy: %0.2f\t\t\t\t\t" % \
+            (mode, e+1, epochs, i, len(loaders[mode]), epoch_loss/samples, epoch_acc/samples),) """
+            epoch_loss/=len(loaders[mode].dataset)
+            epoch_acc/=len(loaders[mode].dataset)
+            losses[mode].append(epoch_loss)
+            accuracies[mode].append(epoch_acc)
+            print ("\r[%s] Epoch %d/%d. Iteration %d/%d. Loss: %0.2f. Accuracy: %0.2f\t\t\t\t\t" % \
+            (mode, e+1, epochs, i, len(loaders[mode]), epoch_loss, epoch_acc),)
     #restituiamo il modello e i vari log
     return model, (losses, accuracies)                                                                                                                                            

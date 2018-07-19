@@ -104,5 +104,33 @@ AlexNet(
     (4): Linear(in_features=4096, out_features=4096, bias=True)
     (5): ReLU(inplace)
     (6): Linear(in_features=4096, out_features=1000, bias=True)
+    x = self.F5(x.view(x.shape[0],-1)) 
   )
 )
+###########PRIMA
+('SELECT fpbu.user_id as user, fpbu.product_id as product, \
+C*(1/(1+ m))   m = 1/2= 0.5 . 
+
+
+
+  ((2*(1/(1+(adso.averageDays/30)))*fpbu.freq_x) + ABS(pdup.day-pdbu.day) + ABS(ptfbu.time_frame-pibup.time_frame)) as score \
+###################dopo 
+userScore = sqlc.sql('SELECT fpbu.user_id as user, fpbu.product_id as product, \
+                        ((200*2*(1/(1+(adso.averageDays/30)))*fpbu.freq_x) + power(2,ABS(pdup.day-pdbu.day)) + power(2,ABS(ptfbu.time_frame-pibup.time_frame)) ) as score \
+                      FROM frequencyProductByUser_prior AS fpbu JOIN popularDayByUserAndProduct as pdup \
+                        ON fpbu.user_id=pdup.user_id AND fpbu.product_id = pdup.product_id \
+                      JOIN popularDayByUser as pdbu \
+                        ON pdbu.day = pdup.day AND pdbu.user_id=pdup.user_id  \
+                      JOIN popularTimeFrameByUserAndProduct as pibup \
+                        ON pibup.user_id = pdup.user_id AND pibup.product_id = pdup.product_id \
+                      JOIN popularTimeFrameByUser as ptfbu \
+                        ON ptfbu.user_id = pibup.user_id  \
+                      JOIN averageDaysSinceOrder as adso \
+                        ON adso.user_id = ptfbu.user_id \
+                      ORDER BY fpbu.user_id')
+print("finish")                     
+#userScore.show()
+##############
+
+
+# ---------- INCEPTION V3 ----------
