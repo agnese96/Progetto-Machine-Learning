@@ -32,10 +32,10 @@ imageLoaderValidation = DataLoader(datasetValidation, batch_size=5, num_workers=
 
 #%%
 import torchvision.models as models
-ResNet = models.resnet18(pretrained=True)
+ResNet = models.resnet50(pretrained=True)
 
 #%%
-print(ResNet) #visualizza modello 
+#print(ResNet) #visualizza modello 
 
 #%%
 from copy import deepcopy
