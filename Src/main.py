@@ -28,17 +28,22 @@ datasetValidation = ImageDataset(path+'/Dataset/images', path+'/Dataset/validati
 
 #%% definiamo i data loaders
 imageLoaderTrain = DataLoader(datasetTrain, batch_size=10, num_workers=0, shuffle=True)
-imageLoaderValidation = DataLoader(datasetValidation, batch_size=10, num_workers=2)
+imageLoaderValidation = DataLoader(datasetValidation, batch_size=10, num_workers=0)
 
 #%%
 import torchvision.models as models
 AlexNet = models.alexnet(pretrained=True)
+#SqueezeNet = models.squeezenet1_1(pretrained=True)
+#Inception = models.inception_v3(pretrained=True)
+
 #%%
-print(AlexNet) #visualizza modello 
+#print(Inception) #visualizza modello 
 
 #%%
 from copy import deepcopy
 model = deepcopy(AlexNet) #copia modello 
+#model = deepcopy(SqueezeNet) #copia modello 
+#model = deepcopy(Inception) #copia modello
 
 #%%
 """ from torch import nn
@@ -51,13 +56,16 @@ from torch import nn
 classifierMod = list(model.classifier)
 classifierMod.pop()
 classifierMod.append(nn.Linear(4096,16))
+
 #%%
 model.classifier = nn.Sequential(*classifierMod)
+
 #%%
 model.classifier
 
 #%%
 torch.cuda.empty_cache()
+
 #%%
 from trainFunction import trainClassification
 modelTrained, classificationLogs = trainClassification(model, imageLoaderTrain, imageLoaderValidation)
