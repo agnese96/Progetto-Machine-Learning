@@ -7,6 +7,7 @@ path
 #%% serve per jupyter
 import os
 os.chdir('./Src')
+#%%
 path='..'
 
 #%% main imports
@@ -32,7 +33,7 @@ imageLoaderValidation = DataLoader(datasetValidation, batch_size=5, num_workers=
 
 #%%
 import torchvision.models as models
-AlexNet = models.alexnet(pretrained=True)
+AlexNet = models.alexnet()
 #%%
 
 #print(AlexNet) #visualizza modello 
@@ -63,14 +64,20 @@ model.classifier
 #%%
 torch.cuda.empty_cache()
 #%%
-model.load_state_dict(torch.load('../Models/AlexNetCrossEntropy3epoch1532018531.621534.pth'))
+
+model.load_state_dict(torch.load('../Models/AlexNetNoPretrainedCrossEntropy15_1532030250.256796.pth'))
 #%%
 from trainFunction import trainClassification
-epoch=15
+epoch=20
 #%%
 modelTrained, classificationLogs = trainClassification(model, imageLoaderTrain, imageLoaderValidation, epochs=epoch)
 print(classificationLogs)
 # save model
 import time
-path="../Models/AlexNetCrossEntropy%d_%f.pth" % (epoch, time.time())
+path="../Models/AlexNetNoPretrainedCrossEntropy%d_%f.pth" % (epoch, time.time())
 torch.save(modelTrained.state_dict(), path)
+
+#%% 
+from helperFunctions import plot_logs_classification
+#%%
+plot_logs_classification(classificationLogs)

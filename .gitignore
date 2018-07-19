@@ -106,3 +106,7 @@ venv.bak/
 # project ignore
 Dataset/*
 .vs/*
+<<<<<<< HEAD
+=======
+Models
+>>>>>>> 835aa9a... Added plot logs function
