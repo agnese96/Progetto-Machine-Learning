@@ -1,38 +1,44 @@
 from torch import nn
 class MiniAlexNet(nn.Module):
-  def __init__(self, input_channels=3, out_classes=100):
+  def __init__(self, input_channels=3, out_classes=16):
     super(MiniAlexNet, self).__init__() 
     #ridefiniamo il modello utilizzando i moduli sequential.
     #ne definiamo due: un "feature extractor", che estrae le feature maps
     #e un "classificatore" che implementa i livelly FC
     self.feature_extractor = nn.Sequential(
       #Conv1
-      nn.Conv2d(input_channels, 16, 5, padding=2), #Input: 3 x 32 x 32. Ouput: 16 x 32 x 32
-      nn.MaxPool2d(2), #Input: 16 x 32 x 32. Output: 16 x 16 x 16
+      nn.Conv2d(input_channels, 16, 5, padding=2), #Input: 3 x 224 x 224. Ouput: 16 x 224 x 224
+      nn.MaxPool2d(2), #Input: 16 x 224 x 224. Output: 16 x 112 x 112
       nn.ReLU(),
                   
       #Conv2
-      nn.Conv2d(16, 32, 5, padding=2), #Input 16 x 16 x 16. Output: 32 x 16 x 16
-      nn.MaxPool2d(2), #Input: 32 x 16 x 16. Output: 32 x 8 x 8
+      nn.Conv2d(16, 32, 5, padding=2), #Input 16 x 112 x 112. Output: 32 x 112 x 112
+      nn.MaxPool2d(2), #Input: 32 x 112 x 112. Output: 32 x 56 x 56
       nn.ReLU(),
                   
       #Conv3
-      nn.Conv2d(32, 64, 3, padding=1), #Input 32 x 8 x 8. Output: 64 x 8 x 8
+      nn.Conv2d(32, 64, 3, padding=1), #Input 32 x 56 x 56. Output: 64 x 56 x 56
+      nn.MaxPool2d(2), #Modificato Input: 64 x 56 x 56. Output: 64 x 28 x 28
       nn.ReLU(),
                   
       #Conv4
-      nn.Conv2d(64, 128, 3, padding=1), #Input 64 x 8 x 8. Output: 128 x 8 x 8
+      nn.Conv2d(64, 128, 3, padding=1), #Input 64 x 28 x 28. Output: 128 x 28 x 28
       nn.ReLU(),
                   
       #Conv5
-      nn.Conv2d(128, 256, 3, padding=1), #Input 128 x 8 x 8. Output: 256 x 8 x 8
-      nn.MaxPool2d(2), #Input: 256 x 8 x 8. Output: 256 x 4 x 4
-      nn.ReLU()
+      nn.Conv2d(128, 256, 3, padding=1), #Input 128 x 28 x 28. Output: 256 x 28 x 28
+      nn.MaxPool2d(2), #Input: 256 x 28 x 28. Output: 256 x 14 x 14
+      nn.ReLU(),
+
+      #Conv6
+      nn.Conv2d(256, 512, 3, padding=1), #Input 256 x 14 x 14. Output: 512 x 14 x 14
+      nn.MaxPool2d(2), #Input: 512 x 14 x 14. Output: 512 x 7 x 7
+      nn.ReLU(),
     )
             
     self.classifier = nn.Sequential(
       #FC6
-      nn.Linear(4096, 2048), #Input: 256 * 4 * 4
+      nn.Linear(25088, 2048), #Input: 512 * 7 * 7
       nn.ReLU(),
                   
       #FC7
