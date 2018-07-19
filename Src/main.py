@@ -5,9 +5,9 @@ path = os.getcwd()
 path
 
 #%% serve per jupyter
-import os
-os.chdir('./Src')
-path='..'
+#import os
+#os.chdir('./Src')
+#path='..'
 
 #%% main imports
 import torch
@@ -31,34 +31,15 @@ imageLoaderTrain = DataLoader(datasetTrain, batch_size=5, num_workers=0, shuffle
 imageLoaderValidation = DataLoader(datasetValidation, batch_size=5, num_workers=0)
 
 #%%
-import torchvision.models as models
-AlexNet = models.alexnet(pretrained=True)
-#%%
+#import torchvision.models as models
+#AlexNet = models.alexnet(pretrained=True)
 
+#%%
 #print(AlexNet) #visualizza modello 
 
 #%%
-
-from copy import deepcopy
-model = deepcopy(AlexNet) #copia modello 
-
-#%%
-""" from torch import nn
-classifierMod = list(model.classifier)
-classifierMod.append(nn.ReLU(inplace=True))
-classifierMod.append(nn.Linear(100,100))
-classifierMod.append(nn.ReLU(inplace=True))
-classifierMod.append(nn.Linear(1000, 16)) """
-from torch import nn
-classifierMod = list(model.classifier)
-classifierMod.pop()
-classifierMod.append(nn.Linear(4096,16))
-
-#%%
-model.classifier = nn.Sequential(*classifierMod)
-
-#%%
-model.classifier
+from MiniAlexNet import MiniAlexNet
+model = MiniAlexNet()
 
 #%%
 torch.cuda.empty_cache()
