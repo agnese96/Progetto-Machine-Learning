@@ -31,34 +31,15 @@ imageLoaderTrain = DataLoader(datasetTrain, batch_size=5, num_workers=0, shuffle
 imageLoaderValidation = DataLoader(datasetValidation, batch_size=5, num_workers=0)
 
 #%%
+#from Inception_lib import Inception3
+#model = Inception3()
+
+#%%
 import torchvision.models as models
-AlexNet = models.alexnet(pretrained=True)
-#%%
-
-#print(AlexNet) #visualizza modello 
-
-#%%
+inception = models.inception_v3(pretrained=True)
 
 from copy import deepcopy
-model = deepcopy(AlexNet) #copia modello 
-
-#%%
-""" from torch import nn
-classifierMod = list(model.classifier)
-classifierMod.append(nn.ReLU(inplace=True))
-classifierMod.append(nn.Linear(100,100))
-classifierMod.append(nn.ReLU(inplace=True))
-classifierMod.append(nn.Linear(1000, 16)) """
-from torch import nn
-classifierMod = list(model.classifier)
-classifierMod.pop()
-classifierMod.append(nn.Linear(4096,16))
-
-#%%
-model.classifier = nn.Sequential(*classifierMod)
-
-#%%
-model.classifier
+model = deepcopy(inception)
 
 #%%
 torch.cuda.empty_cache()
