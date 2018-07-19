@@ -62,9 +62,15 @@ model.classifier
 
 #%%
 torch.cuda.empty_cache()
-
+#%%
+model.load_state_dict(torch.load('../Models/AlexNetCrossEntropy3epoch1532018531.621534.pth'))
 #%%
 from trainFunction import trainClassification
-modelTrained, classificationLogs = trainClassification(model, imageLoaderTrain, imageLoaderValidation)
-
+epoch=15
+#%%
+modelTrained, classificationLogs = trainClassification(model, imageLoaderTrain, imageLoaderValidation, epochs=epoch)
 print(classificationLogs)
+# save model
+import time
+path="../Models/AlexNetCrossEntropy%d_%f.pth" % (epoch, time.time())
+torch.save(modelTrained.state_dict(), path)
