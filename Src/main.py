@@ -2,6 +2,7 @@
 import os
 #os.chdir('./Src')
 path = os.getcwd()
+path
 
 #%% serve per jupyter
 #import os
@@ -31,27 +32,29 @@ imageLoaderValidation = DataLoader(datasetValidation, batch_size=10, num_workers
 
 #%%
 import torchvision.models as models
-squeezenet = models.squeezenet1_1(pretrained=True)
+AlexNet = models.alexnet(pretrained=True)
 #%%
-print(squeezenet) #visualizza modello 
+print(AlexNet) #visualizza modello 
 
 #%%
 from copy import deepcopy
-model = deepcopy(squeezenet) #copia modello 
+model = deepcopy(AlexNet) #copia modello 
 
 #%%
+""" from torch import nn
+classifierMod = list(model.classifier)
+classifierMod.append(nn.ReLU(inplace=True))
+classifierMod.append(nn.Linear(100,100))
+classifierMod.append(nn.ReLU(inplace=True))
+classifierMod.append(nn.Linear(1000, 16)) """
 from torch import nn
 classifierMod = list(model.classifier)
-classifierMod.append(nn.Linear(1000,16))
+classifierMod.pop()
+classifierMod.append(nn.Linear(4096,16))
 #%%
 model.classifier = nn.Sequential(*classifierMod)
 #%%
-""" from torch import nn
-fcMod = [model.fc, nn.Linear(1000,16)]
-model.fc = nn.Sequential(*fcMod)
-
-#%% 
-model.fc """
+model.classifier
 
 #%%
 torch.cuda.empty_cache()
