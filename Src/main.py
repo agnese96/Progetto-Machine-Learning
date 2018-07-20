@@ -42,33 +42,22 @@ from copy import deepcopy
 model = deepcopy(ResNet) #copia modello 
 
 #%%
-""" from torch import nn
-classifierMod = list(model.classifier)
-classifierMod.append(nn.ReLU(inplace=True))
-classifierMod.append(nn.Linear(100,100))
-classifierMod.append(nn.ReLU(inplace=True))
-classifierMod.append(nn.Linear(1000, 16)) """
-"""from torch import nn
-classifierMod = list(model.fc)
-classifierMod.pop()
-classifierMod.append(nn.Linear(4096,16))"""
+from torch import nn
+model.fc = nn.Linear(512,16)
 
 #%%
-""""model.fc = nn.Sequential(*classifierMod)
-
-#%%
-model.fc"""
+model.fc
 
 #%%
 torch.cuda.empty_cache()
 
 #%%
 modelPath="C:/Users/enric/Google Drive/Trio++/3°ANNO/Machine Learning/Progetto/Models/"
-#model.load_state_dict(torch.load(modelPath+'ResNet18CrossEntropyReg5_1532030250.256796.pth'))
+#model.load_state_dict(torch.load(modelPath+'ResNet18CrossEntropyReg5_1532099229.886488.pth'))
 
 #%%
 from trainFunction import trainClassification
-epoch = 5
+epoch = 3
 modelTrained, classificationLogs = trainClassification(model, imageLoaderTrain, imageLoaderValidation, epochs=epoch)
 
 print(classificationLogs)
@@ -77,6 +66,7 @@ print(classificationLogs)
 import time
 modelName="ResNet18CrossEntropyReg%d_%f.pth" % (epoch, time.time())
 torch.save(modelTrained.state_dict(), modelPath+modelName)
+#torch.save(classificationLogs, modelPath+'/Logs/'+modelName)
 
 #%% 
 from helperFunctions import plot_logs_classification
