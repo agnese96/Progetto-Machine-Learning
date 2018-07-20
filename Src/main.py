@@ -64,8 +64,8 @@ model.classifier
 #%%
 torch.cuda.empty_cache()
 #%%
-
-model.load_state_dict(torch.load('../Models/AlexNetNoPretrainedCrossEntropy15_1532030250.256796.pth'))
+modelPath="C:/Users/beaut/Google Drive/Trio++/3°ANNO/Machine Learning/Progetto/Models/"
+model.load_state_dict(torch.load(modelPath+'AlexNetNoPretrainedCrossEntropy15_1532030250.256796.pth'))
 #%%
 from trainFunction import trainClassification
 epoch=20
@@ -74,8 +74,8 @@ modelTrained, classificationLogs = trainClassification(model, imageLoaderTrain, 
 print(classificationLogs)
 # save model
 import time
-path="../Models/AlexNetNoPretrainedCrossEntropy%d_%f.pth" % (epoch, time.time())
-torch.save(modelTrained.state_dict(), path)
+modelName="AlexNetNoPretrainedCrossEntropy%d_%f.pth" % (epoch, time.time())
+torch.save(modelTrained.state_dict(), modelPath+modelName)
 
 #%% 
 from helperFunctions import plot_logs_classification
