@@ -6,9 +6,9 @@ from torch.optim import SGD
 from torch.autograd import Variable
 from torch.utils.data import DataLoader 
 #%%
-def trainClassification(model,train_loader, test_loader, lr=0.01, epochs=3, momentum=0.9):
+def trainClassification(model, train_loader, test_loader, lr=0.01, epochs=20, momentum=0.9, weight_decay = 0.000001):
     criterion = nn.CrossEntropyLoss()
-    optimizer = SGD(model.parameters(),lr, momentum=momentum)
+    optimizer = SGD(model.parameters(),lr, momentum=momentum, weight_decay=weight_decay)
     loaders = {'train':train_loader, 'validation':test_loader} 
     losses = {'train':[], 'validation':[]}
     accuracies = {'train':[], 'validation':[]}
