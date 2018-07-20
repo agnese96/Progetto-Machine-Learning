@@ -106,3 +106,4 @@ venv.bak/
 # project ignore
 Dataset/*
 .vs/*
+.vscode/settings.json
