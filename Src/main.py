@@ -5,9 +5,9 @@ path = os.getcwd()
 path
 
 #%% serve per jupyter
-import os
-os.chdir('./Src')
-path='..'
+#import os
+#os.chdir('./Src')
+#path='..'
 
 #%% main imports
 import torch
@@ -32,7 +32,7 @@ imageLoaderValidation = DataLoader(datasetValidation, batch_size=5, num_workers=
 
 #%%
 import torchvision.models as models
-ResNet = models.resnet50(pretrained=True)
+ResNet = models.resnet18(pretrained=True)
 
 #%%
 print(ResNet) #visualizza modello 
@@ -63,7 +63,23 @@ model.fc"""
 torch.cuda.empty_cache()
 
 #%%
+modelPath="C:/Users/enric/Google Drive/Trio++/3°ANNO/Machine Learning/Progetto/Models/"
+#model.load_state_dict(torch.load(modelPath+'ResNet18CrossEntropyReg5_1532030250.256796.pth'))
+
+#%%
 from trainFunction import trainClassification
-modelTrained, classificationLogs = trainClassification(model, imageLoaderTrain, imageLoaderValidation)
+epoch = 5
+modelTrained, classificationLogs = trainClassification(model, imageLoaderTrain, imageLoaderValidation, epochs=epoch)
 
 print(classificationLogs)
+
+#%% save model
+import time
+modelName="ResNet18CrossEntropyReg%d_%f.pth" % (epoch, time.time())
+torch.save(modelTrained.state_dict(), modelPath+modelName)
+
+#%% 
+from helperFunctions import plot_logs_classification
+
+#%%
+plot_logs_classification(classificationLogs)
