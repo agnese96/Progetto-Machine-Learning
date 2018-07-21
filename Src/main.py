@@ -43,7 +43,8 @@ model = deepcopy(ResNet) #copia modello
 
 #%%
 from torch import nn
-model.fc = nn.Linear(512,16)
+num_ftrs = model.fc.in_features
+model.fc = nn.Linear(num_ftrs,16)
 
 #%%
 model.fc
