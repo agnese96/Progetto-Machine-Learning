@@ -1,13 +1,11 @@
 #%% usare se si hanno problemi di path per entrare dentro la cartella Src
 import os
-#os.chdir('./Src')
 path = os.getcwd()
-path
 
 #%% serve per jupyter
 # import os
 # os.chdir('./Src')
-# path='..'
+#path='..'
 
 #%% main imports
 import torch
@@ -44,9 +42,12 @@ model = deepcopy(ResNet) #copia modello
 #%%
 from torch import nn
 
-avgPoolMod = [nn.FractionalMaxPool2d(7, output_ratio=(0.7,0.7)),nn.ReLU(),nn.FractionalMaxPool2d(7, output_ratio=(0.4,0.4))]
+#avgPoolMod = [nn.FractionalMaxPool2d(7, output_ratio=(0.7,0.7)),nn.ReLU(),nn.FractionalMaxPool2d(7, output_ratio=(0.4,0.4))]
+avgPoolMod = [nn.AdaptiveAvgPool2d(3),nn.ReLU(),nn.AdaptiveAvgPool2d(6)]
 model.avgpool = nn.Sequential(*avgPoolMod)
-model.fc = nn.Linear(529,16)
+#model.avgpool = nn.AdaptiveAvgPool2d(7)
+num_ftrs = model.fc.in_features
+model.fc = nn.Linear(num_ftrs,16)
 
 #%% test for output size
 # x = datasetTrain[0]
@@ -82,4 +83,4 @@ torch.save(modelTrained.state_dict(), modelPath+modelName)
 from helperFunctions import plot_logs_classification
 
 #%%
-#plot_logs_classification(classificationLogs)
+plot_logs_classification(classificationLogs)

@@ -29,8 +29,6 @@ def trainClassification(model, train_loader, test_loader, lr=0.01, epochs=20, mo
                 if torch.cuda.is_available(): 
                     x, y = x.cuda(), y.cuda()
                 output = model(x)
-                print(output.shape)
-                return 'ciao','addio'
                 l = criterion(output,y) 
                 if mode=='train':
                     l.backward()
