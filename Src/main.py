@@ -32,22 +32,22 @@ imageLoaderValidation = DataLoader(datasetValidation, batch_size=5, num_workers=
 
 #%%
 import torchvision.models as models
-ResNet = models.resnet18(pretrained=True)
+DenseNet = models.densenet121(pretrained=True)
 
 #%%
-print(ResNet) #visualizza modello 
+print(DenseNet) #visualizza modello 
 
 #%%
 from copy import deepcopy
-model = deepcopy(ResNet) #copia modello 
+model = deepcopy(DenseNet) #copia modello 
 
 #%%
 from torch import nn
-num_ftrs = model.fc.in_features
-model.fc = nn.Linear(num_ftrs,16)
+num_ftrs = model.classifier.in_features
+model.classifier = nn.Linear(num_ftrs,16)
 
 #%%
-model.fc
+model.classifier
 
 #%%
 torch.cuda.empty_cache()
@@ -58,7 +58,7 @@ modelPath="C:/Users/enric/Google Drive/Trio++/3°ANNO/Machine Learning/Progetto/
 
 #%%
 from trainFunction import trainClassification
-epoch = 3
+epoch = 1
 modelTrained, classificationLogs = trainClassification(model, imageLoaderTrain, imageLoaderValidation, epochs=epoch)
 
 print(classificationLogs)
@@ -66,7 +66,7 @@ print(classificationLogs)
 #%% save model
 import time
 modelName="ResNet18CrossEntropyReg%d_%f.pth" % (epoch, time.time())
-torch.save(modelTrained.state_dict(), modelPath+modelName)
+#torch.save(modelTrained.state_dict(), modelPath+modelName)
 #torch.save(classificationLogs, modelPath+'/Logs/'+modelName)
 
 #%% 
