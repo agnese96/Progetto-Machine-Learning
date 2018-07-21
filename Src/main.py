@@ -45,19 +45,20 @@ model = deepcopy(ResNet) #copia modello
 from torch import nn
 import torch.nn.functional as F
 
-class Model(nn.Module):
+class ModelPrint(nn.Module):
     def __init__(self):
-        super(Model, self).__init__()
+        super(ModelPrint, self).__init__()
 
     def forward(self, x):
-       x = F.relu(self.conv1(x))
-       return F.relu(self.conv2(x))
+        print (x.shape)
+        return x 
 
 
-avgPoolMod = [nn.FractionalMaxPool2d(7, output_ratio=(0.7,0.7)),nn.ReLU(),nn.FractionalMaxPool2d(7, output_ratio=(0.4,0.4))]
+avgPoolMod = [nn.FractionalMaxPool2d(7, output_ratio=(0.7,0.7)),nn.ReLU(),nn.FractionalMaxPool2d(7, output_ratio=(0.4,0.4)) ]
 model.avgpool = nn.Sequential(*avgPoolMod)
 #model.fc = nn.Linear(529,16)
-model.fc = nn.ReLU()
+model.fc = ModelPrint()
+
 #%% test for output size
 # x = datasetTrain[0]
 # print(x['image'].shape)
