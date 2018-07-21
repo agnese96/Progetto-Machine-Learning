@@ -5,9 +5,9 @@ path = os.getcwd()
 path
 
 #%% serve per jupyter
-#import os
-#os.chdir('./Src')
-#path='..'
+# import os
+# os.chdir('./Src')
+# path='..'
 
 #%% main imports
 import torch
@@ -35,7 +35,7 @@ import torchvision.models as models
 ResNet = models.resnet18(pretrained=True)
 
 #%%
-print(ResNet) #visualizza modello 
+#print(ResNet) #visualizza modello 
 
 #%%
 from copy import deepcopy
@@ -43,7 +43,27 @@ model = deepcopy(ResNet) #copia modello
 
 #%%
 from torch import nn
-model.fc = nn.Linear(512,16)
+import torch.nn.functional as F
+
+class Model(nn.Module):
+    def __init__(self):
+        super(Model, self).__init__()
+
+    def forward(self, x):
+       x = F.relu(self.conv1(x))
+       return F.relu(self.conv2(x))
+
+
+avgPoolMod = [nn.FractionalMaxPool2d(7, output_ratio=(0.7,0.7)),nn.ReLU(),nn.FractionalMaxPool2d(7, output_ratio=(0.4,0.4))]
+model.avgpool = nn.Sequential(*avgPoolMod)
+#model.fc = nn.Linear(529,16)
+model.fc = nn.ReLU()
+#%% test for output size
+# x = datasetTrain[0]
+# print(x['image'].shape)
+# y = model(x['image'])
+# print(y.shape)
+# exit
 
 #%%
 model.fc
@@ -72,4 +92,4 @@ torch.save(modelTrained.state_dict(), modelPath+modelName)
 from helperFunctions import plot_logs_classification
 
 #%%
-plot_logs_classification(classificationLogs)
+#plot_logs_classification(classificationLogs)
