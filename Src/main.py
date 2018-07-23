@@ -35,7 +35,7 @@ import torchvision.models as models
 ResNet = models.resnet18(pretrained=True)
 
 #%%
-print(ResNet) #visualizza modello 
+#print(ResNet) #visualizza modello 
 
 #%%
 from copy import deepcopy
@@ -44,28 +44,29 @@ model = deepcopy(ResNet) #copia modello
 #%%
 from torch import nn
 num_ftrs = model.fc.in_features
-model.fc = nn.Linear(num_ftrs,16)
+model.fc = nn.Linear(num_ftrs,4)
+
 
 #%%
-model.fc
+model.double()
 
 #%%
 torch.cuda.empty_cache()
 
 #%%
 modelPath="C:/Users/enric/Google Drive/Trio++/3°ANNO/Machine Learning/Progetto/Models/"
-#model.load_state_dict(torch.load(modelPath+'ResNet18CrossEntropyReg5_1532099229.886488.pth'))
+#model.load_state_dict(torch.load(modelPath+'ResNet18LocalizationLossReg5_1532099229.886488.pth'))
 
 #%%
 from trainFunction import trainClassification
-epoch = 3
+epoch = 1
 modelTrained, classificationLogs = trainClassification(model, imageLoaderTrain, imageLoaderValidation, epochs=epoch)
 
 print(classificationLogs)
 
 #%% save model
 import time
-modelName="ResNet18CrossEntropyReg%d_%f.pth" % (epoch, time.time())
+modelName="ResNet18LocalizationLossReg%d_%f.pth" % (epoch, time.time())
 torch.save(modelTrained.state_dict(), modelPath+modelName)
 #torch.save(classificationLogs, modelPath+'/Logs/'+modelName)
 

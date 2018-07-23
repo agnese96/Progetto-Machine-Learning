@@ -23,13 +23,14 @@ class ImageDataset(Dataset):
         # carichiamo l'immagine utilizzando PIL
         im = Image.open(path.join(self.imgPath, f))
         if self.transform is not None:
-            im = self.transform(im)
+            im = self.transform(im).double()
         label = int(l)
         x = float(x)
         y = float(y)
         u = float(u)
         v = float(v)
-        return {'image':im, 'label':label, 'x':x, 'y':y, 'u':u, 'v':v}
+        target = np.array([x,y,u,v])
+        return {'image':im, 'label':label, 'target':target}
     def __len__(self):
         return len(self.images)
 
