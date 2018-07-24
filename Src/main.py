@@ -5,9 +5,9 @@ path = os.getcwd()
 path
 
 #%% serve per jupyter
-#import os
-#os.chdir('./Src')
-#path='..'
+import os
+os.chdir('./Src')
+path='..'
 
 #%% main imports
 import torch
@@ -53,24 +53,25 @@ model.double()
 torch.cuda.empty_cache()
 
 #%%
-modelPath="C:/Users/enric/Google Drive/Trio++/3°ANNO/Machine Learning/Progetto/Models/"
+modelPath="C:/Users/beaut/Google Drive/Trio++/3°ANNO/Machine Learning/Progetto/Models/"
 #model.load_state_dict(torch.load(modelPath+'ResNet18LocalizationLossReg5_1532099229.886488.pth'))
 
 #%%
-from trainFunction import trainClassification
+from trainFunction import trainRegression
 epoch = 1
-modelTrained, classificationLogs = trainClassification(model, imageLoaderTrain, imageLoaderValidation, epochs=epoch)
+#%%
+modelTrained, regressionLogs = trainRegression(model, imageLoaderTrain, imageLoaderValidation, epochs=epoch)
 
-print(classificationLogs)
+print(regressionLogs)
 
 #%% save model
 import time
-modelName="ResNet18LocalizationLossReg%d_%f.pth" % (epoch, time.time())
+modelName="ResNet18LocalizationLossDropout%d_%f.pth" % (epoch, time.time())
 torch.save(modelTrained.state_dict(), modelPath+modelName)
-#torch.save(classificationLogs, modelPath+'/Logs/'+modelName)
+#torch.save(regressionLogs, modelPath+'/Logs/'+modelName)
 
 #%% 
-from helperFunctions import plot_logs_classification
+#from helperFunctions import plot_logs_classification
 
 #%%
-plot_logs_classification(classificationLogs)
+#plot_logs_classification(regressionLogs)

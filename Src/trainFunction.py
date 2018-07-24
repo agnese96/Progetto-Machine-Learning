@@ -5,6 +5,7 @@ from sklearn.metrics import mean_absolute_error
 from torch.optim import SGD
 from torch.autograd import Variable
 from torch.utils.data import DataLoader 
+import time
 #%%
 def localizationLoss(input, target, beta=0.7):
     x_pred = input[:,0]
@@ -15,11 +16,11 @@ def localizationLoss(input, target, beta=0.7):
     y = target[:,1]
     u = target[:,2]
     v = target[:,3]
-    return ((x_pred-x).abs()+(y_pred-y).abs() + beta*((u_pred-u).abs()+(v_pred-v).abs())).sum()
+    return (torch.abs(x_pred-x)+torch.abs(y_pred-y) + beta*(torch.abs(u_pred-u)+torch.abs(v_pred-v))).sum()
 def MSE(gt, predictions):
     return((predictions-gt)**2).mean()
 #%%
-def trainClassification(model, train_loader, test_loader, lr=0.01, epochs=20, momentum=0.9, weight_decay = 0.000001):
+def trainRegression(model, train_loader, test_loader, lr=0.01, epochs=20, momentum=0.9, weight_decay = 0.000001):
     criterion = localizationLoss
     optimizer = SGD(model.parameters(),lr, momentum=momentum)
     loaders = {'train':train_loader, 'validation':test_loader} 
@@ -40,19 +41,29 @@ def trainClassification(model, train_loader, test_loader, lr=0.01, epochs=20, mo
                 input=Variable(batch["image"], requires_grad=True)
                 target=Variable(batch["target"],)
                 if torch.cuda.is_available(): 
-                    input, target = input.cuda(), target.cuda()
+                    input, target = input.cuda(), target.cuda(async=True)
                 output = model(input)
+                torch.cuda.synchronize()
+                tm = time.time()
                 l = criterion(output, target) 
+                torch.cuda.synchronize()
+                print('Loss: ',time.time()-tm)
                 if mode=='train':
+                    torch.cuda.synchronize()
+                    tm = time.time()
                     l.backward()
+                    torch.cuda.synchronize()
+                    print('Backward: ',time.time()-tm)
                     optimizer.step()
                     optimizer.zero_grad()
+                torch.cuda.synchronize()
+                tm = time.time()
                 acc = MSE(target.data, output.data)
+                print('Accuracy: ',time.time()-tm)
                 epoch_loss+=l.item()*input.shape[0]
                 epoch_acc+=acc*input.shape[0]
-                samples+=input.shape[0]      
-                # print("\r[%s] Epoch %d/%d. Iteration %d/%d. Loss: %0.2f. Accuracy: %0.2f\t\t\t\t\t" % \
-                #     (mode, e+1, epochs, i, len(loaders[mode]), epoch_loss/samples, epoch_acc/samples),)
+                samples+=input.shape[0]
+                #print('Iteration: %d'%i)
             epoch_loss/=len(loaders[mode].dataset)
             epoch_acc/=len(loaders[mode].dataset)
             losses[mode].append(epoch_loss)
