@@ -44,8 +44,7 @@ model = deepcopy(ResNet) #copia modello
 #%%
 from torch import nn
 num_ftrs = model.fc.in_features
-model.fc = nn.Linear(num_ftrs,4)
-
+model.fc = nn.Sequential(nn.Linear(num_ftrs,100),nn.Dropout(),nn.ReLU(),nn.Linear(100,4))
 
 #%%
 model.double()
