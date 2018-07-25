@@ -27,15 +27,14 @@ datasetTrain = ImageDataset(path+'/Dataset/images', path+'/Dataset/training_list
 datasetValidation = ImageDataset(path+'/Dataset/images', path+'/Dataset/validation_list.csv', transform=transform)
 
 #%%
-ResNet = models.resnet18(pretrained=True)
-model = deepcopy(ResNet) #copia modello 
+from models import getClassificationModel
+model_name = 'ResNet18CrossEntropyReg10_1532170755.190167.pth'
+model = getClassificationModel(previous_state_path=modelPath+model_name)
 num_ftrs = model.fc.in_features
-model.fc = nn.Linear(num_ftrs,16)
-model.load_state_dict(torch.load(modelPath+'ResNet18CrossEntropyReg10_1532170755.190167.pth'))
 model.fc = nn.Linear(num_ftrs,512)
-model.double()
 model.cuda()
-
+#%%
+model
 #%%
 model.eval()
 CNNOutputTrain = [get_vector(x['image']) for x in datasetTrain]

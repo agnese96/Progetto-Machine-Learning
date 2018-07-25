@@ -19,8 +19,10 @@ import numpy as np
 from loadData import ImageDataset
 
 #%%
-transform = transforms.Compose([transforms.Resize([224,224]),transforms.ToTensor(),transforms.Normalize(mean=[0.485, 0.456, 0.406],
-                                 std=[0.229, 0.224, 0.225])])
+transform = transforms.Compose([transforms.Resize([224,224]),
+                                transforms.ToTensor(),
+                                transforms.Normalize(mean=[0.485, 0.456, 0.406],
+                                                     std=[0.229, 0.224, 0.225])])
 datasetTrain = ImageDataset(path+'/Dataset/images', path+'/Dataset/training_list.csv', transform=transform)
 
 #%%
@@ -31,23 +33,10 @@ imageLoaderTrain = DataLoader(datasetTrain, batch_size=5, num_workers=0, shuffle
 imageLoaderValidation = DataLoader(datasetValidation, batch_size=5, num_workers=0)
 
 #%%
-import torchvision.models as models
-ResNet = models.resnet18(pretrained=True)
-
-#%%
-#print(ResNet) #visualizza modello 
-
-#%%
-from copy import deepcopy
-model = deepcopy(ResNet) #copia modello 
-
-#%%
-from torch import nn
-num_ftrs = model.fc.in_features
-model.fc = nn.Sequential(nn.Linear(num_ftrs,100),nn.Dropout(),nn.ReLU(),nn.Linear(100,4))
-
-#%%
-model.double()
+from models import getClassificationModel
+modelPath="C:/Users/beaut/Google Drive/Trio++/3°ANNO/Machine Learning/Progetto/Models/"
+modelName = modelPath+'ResNet18LocalizationLossReg5_1532099229.886488.pth'
+model = getClassificationModel(previous_state_path=modelName)
 
 #%%
 torch.cuda.empty_cache()
@@ -68,10 +57,7 @@ print(regressionLogs)
 import time
 modelName="ResNet18LocalizationLossDropout%d_%f.pth" % (epoch, time.time())
 torch.save(modelTrained.state_dict(), modelPath+modelName)
-#torch.save(regressionLogs, modelPath+'/Logs/'+modelName)
 
 #%% 
-#from helperFunctions import plot_logs_classification
-
-#%%
-#plot_logs_classification(regressionLogs)
+from helperFunctions import plot_logs_classification
+plot_logs_classification(regressionLogs)
