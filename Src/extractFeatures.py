@@ -13,6 +13,7 @@ path = '..'
 modelPath="C:/Users/beaut/Google Drive/Trio++/3°ANNO/Machine Learning/Progetto/Models/"
 
 def get_vector(img):
+    # makes variable volatile
     with torch.no_grad():
         t_img = Variable(img).unsqueeze(0).cuda()
     features = []

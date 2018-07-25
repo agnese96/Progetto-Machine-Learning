@@ -4,6 +4,7 @@ from PIL import Image
 from os import path
 import pandas as pd
 import numpy as np 
+import torch
 class ImageDataset(Dataset):
     def __init__(self, imgPath, listPath, transform=None):
         """Input:
@@ -47,6 +48,7 @@ class FeatureDataset(Dataset):
         u = float(u)
         v = float(v)
         target = np.array([x,y,u,v])
-        return {'features': self.features[index], 'target': target}
+        features = torch.tensor(*self.features[index])
+        return {'features': features, 'target': target}
     def __len__(self):
-        return len(self.features)
+        return len(self.list)

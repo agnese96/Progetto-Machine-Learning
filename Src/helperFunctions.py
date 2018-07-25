@@ -39,3 +39,23 @@ def plot_logs_classification(logs):
     plt.legend(['Training accuracy', 'Testing accuracy'])
     plt.grid()
     plt.show()
+
+#%% plottiamo i log
+def plot_logs_regression(logs):
+    train_losses, train_acc, test_losses, test_acc = \
+        logs[0]['train'], logs[1]['train'], logs[0]['validation'], logs[1]['validation']
+    plt.figure(figsize=(18,6))
+    plt.subplot(121)
+    plt.plot(train_losses)
+    plt.plot(test_losses)
+    plt.yscale('log')
+    plt.legend(['Training loss', 'Testing loss'])
+    plt.grid()
+    plt.subplot(122)
+    plt.plot(train_acc)
+    plt.plot(test_acc)
+    plt.yscale('log')
+    plt.legend(['Training accuracy', 'Testing accuracy'])
+    plt.grid()
+    plt.show()
+
