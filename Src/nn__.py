@@ -15,17 +15,23 @@ from loadData import FeatureDataset, ImageDataset
 import torchvision.transforms as transforms
 from torch.utils.data import DataLoader
 
-
-
 class NNRegressor(nn.Module):
     def __init__(self,in_features, out_features=4,hidden_units=200,):
         super(NNRegressor,self).__init__()
         self.model = nn.Sequential(
-            nn.Linear(in_features,hidden_units),
+            nn.Linear(in_features,400),
             nn.ReLU(),
-            nn.Linear(hidden_units,hidden_units),
+            nn.Linear(400,300),
             nn.ReLU(),
-            nn.Linear(hidden_units,out_features),
+            nn.Linear(300,200),
+            nn.ReLU(),
+            nn.Linear(200,100),
+            nn.ReLU(),
+            nn.Linear(100,100),
+            nn.ReLU(),
+            nn.Linear(100,50),
+            nn.ReLU(),
+            nn.Linear(50,out_features),
         )
     def forward(self,x):
         return self.model(x)
@@ -41,9 +47,9 @@ def localizationLoss(input, target, beta=0.7):
     v = target[:,3]
     return torch.mean((x_pred-x)**2+(y_pred-y)**2 + beta*((u_pred-u)**2+(v_pred-v)**2))
 
-def trainRegression(model, train_loader, test_loader, lr=0.01, epochs=20, momentum=0.9, weight_decay = 0.000001):
+def trainRegression(model, train_loader, test_loader, lr=0.001, epochs=20, momentum=0.8, weight_decay = 0.000001):
     criterion = localizationLoss
-    optimizer = SGD(model.parameters(),lr, momentum=momentum)
+    optimizer = SGD(model.parameters(),lr, momentum=momentum, weight_decay=weight_decay)
     loaders = {'train':train_loader, 'validation':test_loader} 
     losses = {'train':[], 'validation':[]}
     mse_cumulative = {'train':[], 'validation':[]}
