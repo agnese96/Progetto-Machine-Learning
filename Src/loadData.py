@@ -34,3 +34,19 @@ class ImageDataset(Dataset):
     def __len__(self):
         return len(self.images)
 
+class FeatureDataset(Dataset):
+    def __init__(self, features, listPath):
+        self.features = features
+        self.list = np.loadtxt(listPath, dtype=str, delimiter=',')
+    
+    def __getitem__(self, index):
+        #recuperiamo pathName, x,y,u,v coordinate, l = etichetta classe 
+        f,x,y,u,v,l = self.list[index]
+        x = float(x)
+        y = float(y)
+        u = float(u)
+        v = float(v)
+        target = np.array([x,y,u,v])
+        return {'features': self.features[index], 'target': target}
+    def __len__(self):
+        return len(self.features)

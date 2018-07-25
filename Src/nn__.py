@@ -1,27 +1,37 @@
 #%%
-import torch
-from torch import nn 
-from sklearn.metrics import mean_absolute_error
+import os
+os.chdir('./Src')
+path='..'
+modelPath="C:/Users/beaut/Google Drive/Trio++/3°ANNO/Machine Learning/Progetto/Models/"
+#%%
+import torch 
+import numpy as np 
+from torch import nn
+import time
 from torch.optim import SGD
 from torch.autograd import Variable
-from torch.utils.data import DataLoader 
-import time
-#%%
-def localizationLoss(input, target, beta=0.7):
-    x_pred = input[:,0]
-    y_pred = input[:,1]
-    u_pred = input[:,2]
-    v_pred = input[:,3]
-    x = target[:,0]
-    y = target[:,1]
-    u = target[:,2]
-    v = target[:,3]
-    return torch.sum(torch.abs(x_pred-x)+torch.abs(y_pred-y) + beta*(torch.abs(u_pred-u)+torch.abs(v_pred-v)))
-def MSE(gt, predictions):
-    return((predictions-gt)**2).mean()
-#%%
+from sklearn.metrics import mean_absolute_error
+from loadData import FeatureDataset, ImageDataset
+import torchvision.transforms as transforms
+from torch.utils.data import DataLoader
+
+
+
+class NNRegressor(nn.Module):
+    def __init__(self,in_features, out_features=4,hidden_units=200,):
+        super(NNRegressor,self).__init__()
+        self.model = nn.Sequential(
+            nn.Linear(in_features,hidden_units),
+            nn.ReLU(),
+            nn.Linear(hidden_units,hidden_units),
+            nn.ReLU(),
+            nn.Linear(hidden_units,out_features),
+        )
+    def forward(self,x):
+        return self.model(x)
+
 def trainRegression(model, train_loader, test_loader, lr=0.01, epochs=20, momentum=0.9, weight_decay = 0.000001):
-    criterion = localizationLoss
+    criterion = nn.MSELoss()
     optimizer = SGD(model.parameters(),lr, momentum=momentum)
     loaders = {'train':train_loader, 'validation':test_loader} 
     losses = {'train':[], 'validation':[]}
@@ -38,7 +48,7 @@ def trainRegression(model, train_loader, test_loader, lr=0.01, epochs=20, moment
             epoch_acc = 0
             samples = 0
             for i, batch in enumerate(loaders[mode]):
-                input=Variable(batch["image"], requires_grad=True)
+                input=Variable(batch["features"], requires_grad=True)
                 target=Variable(batch["target"],)
                 if torch.cuda.is_available(): 
                     input, target = input.cuda(), target.cuda(async=True)
@@ -58,7 +68,7 @@ def trainRegression(model, train_loader, test_loader, lr=0.01, epochs=20, moment
                     optimizer.zero_grad()
                 torch.cuda.synchronize()
                 tm = time.time()
-                acc = MSE(target.data, output.data)
+                acc = mean_absolute_error(target.data, output.data)
                 print('Accuracy: ',time.time()-tm)
                 epoch_loss+=l.item()*input.shape[0]
                 epoch_acc+=acc*input.shape[0]
@@ -71,4 +81,18 @@ def trainRegression(model, train_loader, test_loader, lr=0.01, epochs=20, moment
             print ("\r[%s] Epoch %d/%d. Iteration %d/%d. Loss: %0.2f. Accuracy: %0.2f\t\t\t\t\t" % \
             (mode, e+1, epochs, i, len(loaders[mode]), epoch_loss, epoch_acc),)
     #restituiamo il modello e i vari log
-    return model, (losses, accuracies)                                                                                                                                            
+    return model, (losses, accuracies) 
+#%%
+#%% 
+CNNOutputTrain = torch.load(modelPath+'FeaturesResNet18Train512.pth')
+CNNOutputValidation = torch.load(modelPath+'FeaturesResNet18Validation512.pth')
+
+#%%
+TrainDataset = FeatureDataset(CNNOutputTrain, path+'/Dataset/training_list.csv')
+ValidationDataset = FeatureDataset(CNNOutputValidation, path+'/Dataset/validation_list.csv')
+
+NNRegressorModel = NNRegressor(512,4)
+
+#%% definiamo i data loaders
+featureLoaderTrain = DataLoader(TrainDataset, batch_size=5, num_workers=0, shuffle=True)
+featureLoaderValidation = DataLoader(ValidationDataset, batch_size=5, num_workers=0)
