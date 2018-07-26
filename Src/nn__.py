@@ -2,11 +2,14 @@
 import os
 os.chdir('./Src')
 path='..'
+
 #%%
-modelPath="C:/Users/beaut/Google Drive/Trio++/3°ANNO/Machine Learning/Progetto/Models/"
+modelPath="C:/Users/enric/Google Drive/Trio++/3°ANNO/Machine Learning/Progetto/Models/"
+
 #%%
 #modelPath="/Users/alessandrodistefano/GoogleDrive/Trio++/3°ANNO/Machine\ Learning/Progetto/Models"
 #print (modelPath)
+
 #%%
 import torch 
 from loadData import FeatureDataset, ImageDataset
@@ -20,10 +23,12 @@ CNNOutputValidation = torch.load(modelPath+'FeaturesResNet18Validation512.pth')
 #%%
 TrainDataset = FeatureDataset(CNNOutputTrain, path+'/Dataset/training_list.csv')
 ValidationDataset = FeatureDataset(CNNOutputValidation, path+'/Dataset/validation_list.csv')
+
 #%%
 from models import NNRegressor
 NNRegressorModel = NNRegressor(512,4)
 NNRegressorModel.double()
+
 #%% definiamo i data loaders
 featureLoaderTrain = DataLoader(TrainDataset, batch_size=200, num_workers=0, shuffle=True)
 featureLoaderValidation = DataLoader(ValidationDataset, batch_size=200, num_workers=0)

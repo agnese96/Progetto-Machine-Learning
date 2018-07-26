@@ -50,7 +50,7 @@ def trainClassification(model, train_loader, test_loader, lr=0.01, epochs=20, mo
     return model, (losses, accuracies) 
                                                                                                                                           
 #%%
-def localizationLoss(input, target, beta=0.7):
+def localizationLoss(input, target, beta=0.8):
     x_pred = input[:,0]
     y_pred = input[:,1]
     u_pred = input[:,2]
@@ -61,9 +61,9 @@ def localizationLoss(input, target, beta=0.7):
     v = target[:,3]
     return torch.mean((1-beta)*((x_pred-x)**2+(y_pred-y)**2) + beta*((u_pred-u)**2+(v_pred-v)**2))
 
-def trainRegression(model, train_loader, test_loader, lr=0.001, epochs=20, momentum=0.9, weight_decay = 0.000001):
+def trainRegression(model, train_loader, test_loader, lr=0.001, epochs=20, momentum=0.9, weight_decay = 0.0001):
     criterion = localizationLoss
-    optimizer = SGD(model.parameters(),lr, momentum=momentum)
+    optimizer = SGD(model.parameters(),lr, momentum=momentum, weight_decay=weight_decay)
     loaders = {'train':train_loader, 'validation':test_loader} 
     losses = {'train':[], 'validation':[]}
     mae_cumulative = {'train':[], 'validation':[]}
