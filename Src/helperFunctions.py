@@ -29,9 +29,10 @@ def predict(model, dataset, input_key):
         with torch.no_grad():
             temp = Variable(x[input_key]).unsqueeze(0).cuda()
         # do this to return list and not vector
-        prediction = []
-        prediction.append(model(temp).data)
+        # prediction = []
+        prediction = np.array(model(temp).squeeze().data)
         predictions.append(prediction)
+    predictions = np.array(predictions)
     return predictions
 
 #%% plottiamo i log

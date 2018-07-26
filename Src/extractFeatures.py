@@ -26,16 +26,14 @@ transform = transforms.Compose([transforms.Resize([224,224]),transforms.ToTensor
 datasetTrain = ImageDataset(path+'/Dataset/images', path+'/Dataset/training_list.csv', transform=transform)
 datasetValidation = ImageDataset(path+'/Dataset/images', path+'/Dataset/validation_list.csv', transform=transform)
 
-#%%
+#%% 
 from models import getClassificationModel
 model_name = 'ResNet18CrossEntropyReg10_1532170755.190167.pth'
 model = getClassificationModel(previous_state_path=modelPath+model_name)
 num_ftrs = model.fc.in_features
 model.fc = nn.Linear(num_ftrs,512)
 model.cuda()
-#%%
-model
-#%%
+#%% 
 model.eval()
 CNNOutputTrain = [get_vector(x['image']) for x in datasetTrain]
 CNNOutputValidation = [get_vector(x['image']) for x in datasetValidation]
