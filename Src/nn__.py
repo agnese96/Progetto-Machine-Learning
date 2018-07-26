@@ -38,6 +38,21 @@ print(regressionLogs)
 from helperFunctions import plot_logs_regression
 plot_logs_regression(regressionLogs)
 
+#%%
+modelTrained = NNRegressorDropout(512,4)
+modelTrained.double()
+modelTrained.load_state_dict(torch.load(modelPath+'RegressionNNLowerLRMomentumDropout200_1532540427.751633.pth'))
+#%%
+from helperFunctions import predict
+predictions = predict(modelTrained,ValidationDataset,'features')
+gt = []
+for x in ValidationDataset:
+    gt.append(x['target'].data)
+#%%
+print(predictions[0],gt[0])
+#%%
+from evaluate import evaluate_localization
+position_error = evaluate_localization(predictions,gt)
 #%% save model
 import time
 modelName="RegressionNNLowerLRMomentumDropout%d_%f.pth" % (epoch, time.time())
