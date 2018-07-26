@@ -3,7 +3,7 @@ import os
 os.chdir('./Src')
 path='..'
 #%%
-modelPath="C:/Users/enric/Google Drive/Trio++/3°ANNO/Machine Learning/Progetto/Models/"
+modelPath="C:/Users/beaut/Google Drive/Trio++/3°ANNO/Machine Learning/Progetto/Models/"
 #%%
 #modelPath="/Users/alessandrodistefano/GoogleDrive/Trio++/3°ANNO/Machine\ Learning/Progetto/Models"
 #print (modelPath)
@@ -21,8 +21,8 @@ CNNOutputValidation = torch.load(modelPath+'FeaturesResNet18Validation512.pth')
 TrainDataset = FeatureDataset(CNNOutputTrain, path+'/Dataset/training_list.csv')
 ValidationDataset = FeatureDataset(CNNOutputValidation, path+'/Dataset/validation_list.csv')
 #%%
-from models import NNRegressorDropout
-NNRegressorModel = NNRegressorDropout(512,4)
+from models import NNRegressor
+NNRegressorModel = NNRegressor(512,4)
 NNRegressorModel.double()
 #%% definiamo i data loaders
 featureLoaderTrain = DataLoader(TrainDataset, batch_size=200, num_workers=0, shuffle=True)
@@ -33,13 +33,13 @@ featureLoaderValidation = DataLoader(ValidationDataset, batch_size=200, num_work
 
 #%%
 from trainFunction import trainRegression
-epochs = 500
+epochs = 400
 modelTrained, regressionLogs = trainRegression(NNRegressorModel, featureLoaderTrain, featureLoaderValidation, epochs=epochs)
 print(regressionLogs)
 
 #%% save model
 import time
-modelName="RegressionNNLowerLRMomentumDropout%d_%f.pth" % (epochs, time.time())
+modelName="RegressionNNLowerLRMomentumRReLuReg%d_%f.pth" % (epochs, time.time())
 torch.save(modelTrained.state_dict(), modelPath+modelName)
 
 #%% 
@@ -48,8 +48,6 @@ plot_logs_regression(regressionLogs)
 
 #%%
 from helperFunctions import predict
-
-#%%
 import numpy as np
 predictions = predict(modelTrained,ValidationDataset,'features')
 gt = []

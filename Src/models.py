@@ -26,6 +26,27 @@ class NNRegressorDropout(nn.Module):
     def forward(self,x):
         return self.model(x)
 
+class NNRegressor(nn.Module):
+    def __init__(self,in_features, out_features=4):
+        super(NNRegressor,self).__init__()
+        self.model = nn.Sequential(
+            nn.Linear(in_features,400),
+            nn.RReLU(),
+            nn.Linear(400,300),
+            nn.ReLU(),
+            nn.Linear(300,200),
+            nn.ReLU(),
+            nn.Linear(200,100),
+            nn.ReLU(),
+            nn.Linear(100,100),
+            nn.ReLU(),
+            nn.Linear(100,50),
+            nn.RReLU(),
+            nn.Linear(50,out_features),
+        )
+    def forward(self,x):
+        return self.model(x)
+
 def getClassificationModel(out_features=16, previous_state_path=None):
     ResNet = models.resnet18(pretrained=True)
     model = deepcopy(ResNet)
