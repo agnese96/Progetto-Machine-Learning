@@ -58,7 +58,7 @@ def localizationLoss(input, target, beta=0.7):
     y = target[:,1]
     u = target[:,2]
     v = target[:,3]
-    return torch.mean((1-beta)*(x_pred-x)**2+(y_pred-y)**2 + beta*((u_pred-u)**2+(v_pred-v)**2))
+    return torch.sum(torch.abs(x_pred-x)+torch.abs(y_pred-y) + beta*(torch.abs(u_pred-u)+torch.abs(v_pred-v)))
 
 def trainRegression(model, train_loader, test_loader, lr=0.001, epochs=20, momentum=0.9, weight_decay = 0.0001):
     criterion = localizationLoss
