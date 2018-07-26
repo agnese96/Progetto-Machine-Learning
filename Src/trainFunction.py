@@ -47,7 +47,8 @@ def trainClassification(model, train_loader, test_loader, lr=0.01, epochs=20, mo
             print ("\r[%s] Epoch %d/%d. Iteration %d/%d. Loss: %0.2f. Accuracy: %0.2f\t\t\t\t\t" % \
             (mode, e+1, epochs, i, len(loaders[mode]), epoch_loss, epoch_acc),)
     #restituiamo il modello e i vari log
-    return model, (losses, accuracies)                                                                                                                                           
+    return model, (losses, accuracies) 
+                                                                                                                                          
 #%%
 def localizationLoss(input, target, beta=0.7):
     x_pred = input[:,0]
@@ -60,7 +61,7 @@ def localizationLoss(input, target, beta=0.7):
     v = target[:,3]
     return torch.mean((1-beta)*((x_pred-x)**2+(y_pred-y)**2) + beta*((u_pred-u)**2+(v_pred-v)**2))
 
-def trainRegression(model, train_loader, test_loader, lr=0.001, epochs=20, momentum=0.9, weight_decay = 0.0001):
+def trainRegression(model, train_loader, test_loader, lr=0.001, epochs=20, momentum=0.9, weight_decay = 0.000001):
     criterion = localizationLoss
     optimizer = SGD(model.parameters(),lr, momentum=momentum)
     loaders = {'train':train_loader, 'validation':test_loader} 

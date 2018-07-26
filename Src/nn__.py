@@ -3,7 +3,7 @@ import os
 os.chdir('./Src')
 path='..'
 #%%
-modelPath="C:/Users/beaut/Google Drive/Trio++/3°ANNO/Machine Learning/Progetto/Models/"
+modelPath="C:/Users/enric/Google Drive/Trio++/3°ANNO/Machine Learning/Progetto/Models/"
 #%%
 #modelPath="/Users/alessandrodistefano/GoogleDrive/Trio++/3°ANNO/Machine\ Learning/Progetto/Models"
 #print (modelPath)
@@ -29,22 +29,26 @@ featureLoaderTrain = DataLoader(TrainDataset, batch_size=200, num_workers=0, shu
 featureLoaderValidation = DataLoader(ValidationDataset, batch_size=200, num_workers=0)
 
 #%%
+#NNRegressorModel.load_state_dict(torch.load(modelPath+'RegressionNNLowerLRMomentumDropout200_1532540427.751633.pth'))
+
+#%%
 from trainFunction import trainRegression
-epoch = 200
-modelTrained, regressionLogs = trainRegression(NNRegressorModel, featureLoaderTrain, featureLoaderValidation, epochs=epoch)
+epochs = 500
+modelTrained, regressionLogs = trainRegression(NNRegressorModel, featureLoaderTrain, featureLoaderValidation, epochs=epochs)
 print(regressionLogs)
+
+#%% save model
+import time
+modelName="RegressionNNLowerLRMomentumDropout%d_%f.pth" % (epochs, time.time())
+torch.save(modelTrained.state_dict(), modelPath+modelName)
 
 #%% 
 from helperFunctions import plot_logs_regression
 plot_logs_regression(regressionLogs)
 
 #%%
-from models import NNRegressorDropout
-modelTrained = NNRegressorDropout(512,4)
-modelTrained.double()
-modelTrained.load_state_dict(torch.load(modelPath+'RegressionNNLowerLRMomentumDropout200_1532540427.751633.pth'))
-#%%
 from helperFunctions import predict
+
 #%%
 import numpy as np
 predictions = predict(modelTrained,ValidationDataset,'features')
@@ -52,9 +56,7 @@ gt = []
 for x in ValidationDataset:
     gt.append(x['target'])
 gt = np.array(gt)
-#%%
-print(predictions.shape,gt.shape)
-print(type(predictions[0]),type(gt))
+
 #%%
 from evaluate import evaluate_localization
 errors = evaluate_localization(predictions,gt)
@@ -63,7 +65,3 @@ print("Mean Location Error: %0.4f" % (errors[0],))
 print("Median Location Error: %0.4f" % (errors[1],))
 print("Mean Orientation Error: %0.4f" % (errors[2],))
 print("Median Orientation Error: %0.4f" % (errors[3],))
-#%% save model
-import time
-modelName="RegressionNNLowerLRMomentumDropout%d_%f.pth" % (epoch, time.time())
-torch.save(modelTrained.state_dict(), modelPath+modelName)

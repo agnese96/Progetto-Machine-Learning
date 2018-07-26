@@ -9,7 +9,7 @@ class NNRegressorDropout(nn.Module):
         super(NNRegressorDropout,self).__init__()
         self.model = nn.Sequential(
             nn.Linear(in_features,400),
-            nn.ReLU(),
+            nn.RReLU(),
             nn.Linear(400,300),
             nn.ReLU(),
             nn.Linear(300,200),
@@ -19,7 +19,7 @@ class NNRegressorDropout(nn.Module):
             nn.Linear(100,100),
             nn.ReLU(),
             nn.Linear(100,50),
-            nn.ReLU(),
+            nn.RReLU(),
             nn.Dropout(p=dropout),
             nn.Linear(50,out_features),
         )
