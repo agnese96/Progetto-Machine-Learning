@@ -5,8 +5,8 @@ path='..'
 #%%
 modelPath="C:/Users/beaut/Google Drive/Trio++/3°ANNO/Machine Learning/Progetto/Models/"
 #%%
-modelPath="/Users/alessandrodistefano/GoogleDrive/Trio++/3°ANNO/Machine\ Learning/Progetto/Models"
-print (modelPath)
+#modelPath="/Users/alessandrodistefano/GoogleDrive/Trio++/3°ANNO/Machine\ Learning/Progetto/Models"
+#print (modelPath)
 #%%
 import torch 
 from loadData import FeatureDataset, ImageDataset
@@ -20,7 +20,7 @@ CNNOutputValidation = torch.load(modelPath+'FeaturesResNet18Validation512.pth')
 #%%
 TrainDataset = FeatureDataset(CNNOutputTrain, path+'/Dataset/training_list.csv')
 ValidationDataset = FeatureDataset(CNNOutputValidation, path+'/Dataset/validation_list.csv')
-
+#%%
 from models import NNRegressorDropout
 NNRegressorModel = NNRegressorDropout(512,4)
 NNRegressorModel.double()
@@ -39,20 +39,30 @@ from helperFunctions import plot_logs_regression
 plot_logs_regression(regressionLogs)
 
 #%%
+from models import NNRegressorDropout
 modelTrained = NNRegressorDropout(512,4)
 modelTrained.double()
 modelTrained.load_state_dict(torch.load(modelPath+'RegressionNNLowerLRMomentumDropout200_1532540427.751633.pth'))
 #%%
 from helperFunctions import predict
+#%%
+import numpy as np
 predictions = predict(modelTrained,ValidationDataset,'features')
 gt = []
 for x in ValidationDataset:
-    gt.append(x['target'].data)
+    gt.append(x['target'])
+gt = np.array(gt)
 #%%
-print(predictions[0],gt[0])
+print(predictions.shape,gt.shape)
+print(type(predictions[0]),type(gt))
 #%%
 from evaluate import evaluate_localization
-position_error = evaluate_localization(predictions,gt)
+errors = evaluate_localization(predictions,gt)
+print("Errors:")
+print("Mean Location Error: %0.4f" % (errors[0],))
+print("Median Location Error: %0.4f" % (errors[1],))
+print("Mean Orientation Error: %0.4f" % (errors[2],))
+print("Median Orientation Error: %0.4f" % (errors[3],))
 #%% save model
 import time
 modelName="RegressionNNLowerLRMomentumDropout%d_%f.pth" % (epoch, time.time())
