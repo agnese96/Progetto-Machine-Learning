@@ -25,7 +25,7 @@ TrainDataset = FeatureDataset(CNNOutputTrain, path+'/Dataset/training_list.csv')
 ValidationDataset = FeatureDataset(CNNOutputValidation, path+'/Dataset/validation_list.csv')
 
 #%%
-from models import NNRegressor
+from models import NNRegressor, NNRegressorDropout
 NNRegressorModel = NNRegressor(512,4)
 NNRegressorModel.double()
 
