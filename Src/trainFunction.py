@@ -63,7 +63,7 @@ def localizationLoss(input, target, beta=0.8):
 
 def trainRegression(model, train_loader, test_loader, lr=0.001, epochs=20, momentum=0.9, weight_decay = 0.0001):
     criterion = localizationLoss
-    optimizer = SGD(model.parameters(),lr, momentum=momentum, weight_decay=weight_decay)
+    optimizer = SGD(model.parameters(),lr, momentum=momentum,)
     loaders = {'train':train_loader, 'validation':test_loader} 
     losses = {'train':[], 'validation':[]}
     mae_cumulative = {'train':[], 'validation':[]}
