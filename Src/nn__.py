@@ -26,7 +26,7 @@ ValidationDataset = FeatureDataset(CNNOutputValidation, path+'/Dataset/validatio
 
 #%%
 from models import NNRegressor, NNRegressorDropout
-NNRegressorModel = NNRegressor(512,4)
+NNRegressorModel = NNRegressorDropout(512,4)
 NNRegressorModel.double()
 
 #%% definiamo i data loaders
