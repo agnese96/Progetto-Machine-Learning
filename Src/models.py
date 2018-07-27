@@ -5,7 +5,7 @@ import torchvision.models as models
 from copy import deepcopy
 #%%
 class NNRegressorDropout(nn.Module):
-    def __init__(self,in_features, out_features=4,dropout=0.25,):
+    def __init__(self,in_features, out_features=4,dropout=0,):
         super(NNRegressorDropout,self).__init__()
         self.model = nn.Sequential(
             nn.Linear(in_features,400),
