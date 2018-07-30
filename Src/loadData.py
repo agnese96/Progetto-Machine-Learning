@@ -19,12 +19,20 @@ class ImageDataset(Dataset):
         self.transform = transform
     
     def __getitem__(self, index):
-        #recuperiamo pathName, x,y,u,v coordinate, l = etichetta classe 
-        f,x,y,u,v,l = self.images[index]
+        if len(self.images[index]) == 1:
+            print(self.images[index])
+            f = self.images[index]
+            mode = 'test'
+        else:    
+            #recuperiamo pathName, x,y,u,v coordinate, l = etichetta classe 
+            f,x,y,u,v,l = self.images[index]
+            mode = 'training'
         # carichiamo l'immagine utilizzando PIL
         im = Image.open(path.join(self.imgPath, f))
         if self.transform is not None:
             im = self.transform(im).double()
+        if mode == 'test':
+            return {'image':im, 'path':f}
         label = int(l)
         x = float(x)
         y = float(y)

@@ -4,7 +4,7 @@ os.chdir('./Src')
 path='..'
 
 #%%
-modelPath="C:/Users/enric/Google Drive/Trio++/3°ANNO/Machine Learning/Progetto/Models/"
+modelPath="C:/Users/beaut/Google Drive/Trio++/3°ANNO/Machine Learning/Progetto/Models/"
 
 #%%
 #modelPath="/Users/alessandrodistefano/GoogleDrive/Trio++/3°ANNO/Machine\ Learning/Progetto/Models"
@@ -26,7 +26,7 @@ ValidationDataset = FeatureDataset(CNNOutputValidation, path+'/Dataset/validatio
 
 #%%
 from models import NNRegressor, NNRegressorDropout
-NNRegressorModel = NNRegressor(512,4)
+NNRegressorModel = NNRegressorDropout(512,4)
 NNRegressorModel.double()
 
 #%% definiamo i data loaders
@@ -34,31 +34,33 @@ featureLoaderTrain = DataLoader(TrainDataset, batch_size=200, num_workers=0, shu
 featureLoaderValidation = DataLoader(ValidationDataset, batch_size=200, num_workers=0)
 
 #%%
-#NNRegressorModel.load_state_dict(torch.load(modelPath+'RegressionNNLowerLRMomentumDropout200_1532540427.751633.pth'))
+NNRegressorModel.load_state_dict(torch.load(modelPath+'ale_models/Progetto-Machine-LearningFinalPostReg1Ale_RegressionNNReg50_1532643401.950671.pth'))
 
 #%%
 from trainFunction import trainRegression
-epochs = 400
-modelTrained, regressionLogs = trainRegression(NNRegressorModel, featureLoaderTrain, featureLoaderValidation, epochs=epochs)
+epochs = 200
+lr = 0.00021
+modelTrained, regressionLogs = trainRegression(NNRegressorModel, featureLoaderTrain, featureLoaderValidation, epochs=epochs, lr=lr,)
 print(regressionLogs)
 
 #%% save model
 import time
-modelName="RegressionNNLowerLRMomentumRReLuReg%d_%f.pth" % (epochs, time.time())
+modelName="RegressionNNDropoutAleBeta0.85%d_%f.pth" % (epochs, time.time())
 torch.save(modelTrained.state_dict(), modelPath+modelName)
 
 #%% 
 from helperFunctions import plot_logs_regression
 plot_logs_regression(regressionLogs)
-
 #%%
-from helperFunctions import predict
+# from models import NNRegressorDropout
+# modelTrained = NNRegressorDropout(512,4)
+# modelTrained.double()
+# modelTrained.load_state_dict(torch.load(modelPath+'ale_models/Progetto-Machine-LearningFinalPostReg3Ale_RegressionNNReg5_1532649162.319779.pth'))
+#%%
+from helperFunctions import predict, get_gt
 import numpy as np
 predictions = predict(modelTrained,ValidationDataset,'features')
-gt = []
-for x in ValidationDataset:
-    gt.append(x['target'])
-gt = np.array(gt)
+gt = get_gt(ValidationDataset,'target')
 
 #%%
 from evaluate import evaluate_localization

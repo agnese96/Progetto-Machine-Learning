@@ -84,7 +84,7 @@ def trainRegression(model, train_loader, test_loader, lr=0.001, epochs=20, momen
                 if torch.cuda.is_available(): 
                     input, target = input.cuda(), target.cuda(async=True)
                 output = model(input).squeeze(1)
-                l = criterion(output, target)
+                l = criterion(output, target, beta=0.85)
                 if mode=='train':
                     l.backward()
                     optimizer.step()

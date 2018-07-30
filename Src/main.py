@@ -34,17 +34,12 @@ imageLoaderValidation = DataLoader(datasetValidation, batch_size=5, num_workers=
 
 #%%
 from models import getClassificationModel
-modelPath="C:/Users/beaut/Google Drive/Trio++/3°ANNO/Machine Learning/Progetto/Models/"
-modelName = modelPath+'ResNet18LocalizationLossReg5_1532099229.886488.pth'
+modelPath="C:/Users/beaut/Google Drive/Trio++/3°ANNO/Machine Learning/Progetto/Models/old models/"
+modelName = modelPath+'ResNet18CrossEntropyReg10_1532170755.190167.pth'
 model = getClassificationModel(previous_state_path=modelName)
 
 #%%
 torch.cuda.empty_cache()
-
-#%%
-modelPath="C:/Users/beaut/Google Drive/Trio++/3°ANNO/Machine Learning/Progetto/Models/"
-#model.load_state_dict(torch.load(modelPath+'ResNet18LocalizationLossReg5_1532099229.886488.pth'))
-
 #%%
 from trainFunction import trainRegression
 epoch = 1
@@ -59,5 +54,19 @@ modelName="ResNet18LocalizationLossDropout%d_%f.pth" % (epoch, time.time())
 torch.save(modelTrained.state_dict(), modelPath+modelName)
 
 #%% 
-from helperFunctions import plot_logs_classification
-plot_logs_classification(regressionLogs)
+from helperFunctions import plot_logs_classification, predictLabel, get_gt, plot_confusion_matrix
+from sklearn.metrics import confusion_matrix,f1_score
+#plot_logs_classification(regressionLogs)
+predicted = predictLabel(model,datasetValidation)
+gt = get_gt(datasetValidation,'label')
+cm = confusion_matrix(gt,predicted)
+#Vediamo come percentuali 
+cm = cm.astype(float)/cm.sum(1).reshape(-1,1)
+print(cm)
+#%%
+from helperFunctions import plot_confusion_matrix
+plot_confusion_matrix(cm, list(range(16)))
+#%%
+scores = f1_score(gt,predicted,average=None)
+print("F1 per ogni classe: " , scores)
+print("F1 medio per calcolare la performance del classificatore: ", scores.mean())
