@@ -17,9 +17,8 @@ import torchvision.transforms as transforms
 from torch.utils.data import DataLoader
 
 #%% 
-CNNOutputTrain = torch.load(modelPath+'FeaturesResNet18Train512.pth')
-CNNOutputValidation = torch.load(modelPath+'FeaturesResNet18Validation512.pth')
-
+CNNOutputTrain = torch.Tensor(torch.load(modelPath+'FeaturesResNet18Train512.pth')).unsqueeze(1)
+CNNOutputValidation = torch.Tensor(torch.load(modelPath+'FeaturesResNet18Validation512.pth')).unsqueeze(1)
 #%%
 TrainDataset = FeatureDataset(CNNOutputTrain, path+'/Dataset/training_list.csv')
 ValidationDataset = FeatureDataset(CNNOutputValidation, path+'/Dataset/validation_list.csv')
