@@ -55,5 +55,5 @@ def getClassificationModel(out_features=16, previous_state_path=None):
     model.fc = nn.Linear(num_ftrs,out_features)
     if previous_state_path is not None:
         model.load_state_dict(torch.load(previous_state_path))
-    model.double()
+    #model.double()
     return model
