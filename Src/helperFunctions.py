@@ -99,23 +99,3 @@ def plot_confusion_matrix(cm, classes,
     plt.ylabel('True label')
     plt.xlabel('Predicted label')
 
-def rec_curve(predictions, gts):
-    assert len(predictions) == len(gts)
-    errors = []
-    for pred, gt in zip(predictions, gts):
-        errors.append((pred-gt)**2)
-    bins = np.sort(np.unique(errors))
-    freq = []
-    for bin in bins:
-        freq.append((errors <= bin).mean)
-    AUC = np.trapz(freq,bins)
-    totArea = np.max(bins)*1
-    AOC = totArea - AUC
-    _plot_rec_curve(bins, freq, AOC)
-
-def _plot_rec_curve(bins,freq,AOC, name='REC curve'):
-    plt.plot(bins, freq)
-    plt.legend(['%s. AOC: %0.2f'%(name, AOC)])
-    plt.grid()
-    plt.show()
-

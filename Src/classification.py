@@ -1,13 +1,8 @@
-#%% usare se si hanno problemi di path per entrare dentro la cartella Src
-import os
-#os.chdir('./Src')
-path = os.getcwd()
-path
-
 #%% serve per jupyter
-import os
-os.chdir('./Src')
+# import os
+# os.chdir('./Src')
 path='..'
+modelPath="C:/Users/beaut/Google Drive/Trio++/3°ANNO/Machine Learning/Progetto/Models/old models/"
 
 #%% main imports
 import torch
@@ -17,8 +12,6 @@ import numpy as np
 
 #%%
 from loadData import ImageDataset
-
-#%%
 transform = transforms.Compose([transforms.Resize([224,224]),
                                 transforms.ToTensor(),
                                 transforms.Normalize(mean=[0.485, 0.456, 0.406],
@@ -34,19 +27,15 @@ imageLoaderValidation = DataLoader(datasetValidation, batch_size=5, num_workers=
 
 #%%
 from models import getClassificationModel
-modelPath="C:/Users/beaut/Google Drive/Trio++/3°ANNO/Machine Learning/Progetto/Models/old models/"
 modelName = modelPath+'ResNet18CrossEntropyReg10_1532170755.190167.pth'
 model = getClassificationModel(previous_state_path=modelName)
 
 #%%
-torch.cuda.empty_cache()
-#%%
 from trainFunction import trainRegression
-epoch = 1
+epoch = 3
 #%%
 modelTrained, regressionLogs = trainRegression(model, imageLoaderTrain, imageLoaderValidation, epochs=epoch)
-
-print(regressionLogs)
+# print(regressionLogs)
 
 #%% save model
 import time
@@ -56,7 +45,7 @@ torch.save(modelTrained.state_dict(), modelPath+modelName)
 #%% 
 from helperFunctions import plot_logs_classification, predictLabel, get_gt, plot_confusion_matrix
 from sklearn.metrics import confusion_matrix,f1_score
-#plot_logs_classification(regressionLogs)
+plot_logs_classification(regressionLogs)
 predicted = predictLabel(model,datasetValidation)
 gt = get_gt(datasetValidation,'label')
 cm = confusion_matrix(gt,predicted)

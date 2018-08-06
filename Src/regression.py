@@ -1,15 +1,11 @@
 #%%
-import os
-os.chdir('./Src')
-path='..'
+# import os
+# os.chdir('./Src')
+# path='..'
 
 #%%
 modelPath="C:/Users/beaut/Google Drive/Trio++/3°ANNO/Machine Learning/Progetto/Models/"
-
-#%%
-#modelPath="/Users/alessandrodistefano/GoogleDrive/Trio++/3°ANNO/Machine\ Learning/Progetto/Models"
-#print (modelPath)
-
+path = '..'
 #%%
 import torch 
 from loadData import FeatureDataset, ImageDataset
@@ -40,7 +36,7 @@ from trainFunction import trainRegression
 epochs = 200
 lr = 0.00021
 modelTrained, regressionLogs = trainRegression(NNRegressorModel, featureLoaderTrain, featureLoaderValidation, epochs=epochs, lr=lr,)
-print(regressionLogs)
+# print(regressionLogs)
 
 #%% save model
 import time
@@ -50,11 +46,7 @@ torch.save(modelTrained.state_dict(), modelPath+modelName)
 #%% 
 from helperFunctions import plot_logs_regression
 plot_logs_regression(regressionLogs)
-#%%
-# from models import NNRegressorDropout
-# modelTrained = NNRegressorDropout(512,4)
-# modelTrained.double()
-# modelTrained.load_state_dict(torch.load(modelPath+'ale_models/Progetto-Machine-LearningFinalPostReg3Ale_RegressionNNReg5_1532649162.319779.pth'))
+
 #%%
 from helperFunctions import predict, get_gt
 import numpy as np

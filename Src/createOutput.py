@@ -1,9 +1,9 @@
 #%%
-import os
-os.chdir('./Src')
-path='..'
+# import os
+# os.chdir('./Src')
 #%%
 modelPath="C:/Users/beaut/Google Drive/Trio++/3°ANNO/Machine Learning/Progetto/Models/"
+path='..'
 
 #%% main imports
 import torch
@@ -22,9 +22,6 @@ transform = transforms.Compose([transforms.Resize([224,224]),
                                                      
 classificationDataset = ImageDataset(path+'/Dataset/images', path+'/Dataset/testing_list_blind.csv', transform=transform, mode='test')
 imageFeatures = torch.Tensor(torch.load(modelPath+'FeaturesResNet18Test512.pth')).unsqueeze(1)
-#%%
-imageFeatures.shape
-#%%
 regressionDataset = FeatureDataset(imageFeatures, None)
 
 #%%

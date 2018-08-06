@@ -44,6 +44,9 @@ class ImageDataset(Dataset):
 
 class FeatureDataset(Dataset):
     def __init__(self, features, listPath):
+        """Input:
+            features: lista di feature in input
+            listPath: il path al file contenente la lista delle immagini con le relative etichette"""
         self.features = features
         if listPath is not None:
             self.list = np.loadtxt(listPath, dtype=str, delimiter=',')
@@ -52,7 +55,7 @@ class FeatureDataset(Dataset):
             self.mode = 'test'
     
     def __getitem__(self, index):
-        features = torch.tensor(*self.features[index])
+        features = torch.Tensor(*self.features[index])
         if self.mode == 'test':
             return {'features': features}
         #recuperiamo pathName, x,y,u,v coordinate, l = etichetta classe 
