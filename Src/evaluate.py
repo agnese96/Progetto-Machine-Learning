@@ -52,11 +52,11 @@ def main():
 
     errors = evaluate_localization(predicted,target)
 
-    print "Errors:"
-    print "Mean Location Error: %0.4f" % (errors[0],)
-    print "Median Location Error: %0.4f" % (errors[1],)
-    print "Mean Orientation Error: %0.4f" % (errors[2],)
-    print "Median Orientation Error: %0.4f" % (errors[3],)
+    print("Errors:")
+    print("Mean Location Error: %0.4f" % (errors[0],))
+    print("Median Location Error: %0.4f" % (errors[1],))
+    print("Mean Orientation Error: %0.4f" % (errors[2],))
+    print("Median Orientation Error: %0.4f" % (errors[3],))
 
 if __name__== "__main__":
     main()
